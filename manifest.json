@@ -1,0 +1,21 @@
+{
+  "short_name": "Vestiaire",
+  "name": "Maison Vestiaire",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3050/3050239.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3050/3050239.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#f5f5f4",
+  "theme_color": "#1c1917",
+  "display": "standalone",
+  "orientation": "portrait"
+}
