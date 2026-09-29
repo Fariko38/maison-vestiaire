@@ -64,11 +64,11 @@
     <section id="tab-dressing" class="space-y-4">
       <div class="space-y-2">
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
-          <button onclick="filterCategory('All')" class="filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-stone-900 text-white whitespace-nowrap shadow-sm">Tout</button>
-          <button onclick="filterCategory('Haut')" class="filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Hauts</button>
-          <button onclick="filterCategory('Bas')" class="filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Bas</button>
-          <button onclick="filterCategory('Chaussures')" class="filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Chaussures</button>
-          <button onclick="filterCategory('Accessoire')" class="filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Accessoires</button>
+          <button onclick="filterCategory('All')" id="btn-cat-All" class="filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-stone-900 text-white whitespace-nowrap shadow-sm">Tout</button>
+          <button onclick="filterCategory('Haut')" id="btn-cat-Haut" class="filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Hauts</button>
+          <button onclick="filterCategory('Bas')" id="btn-cat-Bas" class="filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Bas</button>
+          <button onclick="filterCategory('Chaussures')" id="btn-cat-Chaussures" class="filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Chaussures</button>
+          <button onclick="filterCategory('Accessoire')" id="btn-cat-Accessoire" class="filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Accessoires</button>
         </div>
 
         <div id="subcategory-filters" class="hidden flex items-center gap-1 overflow-x-auto no-scrollbar pb-1 text-[11px]"></div>
@@ -219,13 +219,15 @@
   <div id="add-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center hidden">
     <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-stone-100 pb-2">
-        <h3 class="font-serif text-lg font-semibold text-stone-900">Nouvelle Pièce</h3>
+        <h3 id="modal-title" class="font-serif text-lg font-semibold text-stone-900">Nouvelle Pièce</h3>
         <button onclick="closeModal()" class="text-stone-400 p-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
       <form id="add-form" onsubmit="handleFormSubmit(event)" class="space-y-3">
+        <input type="hidden" id="edit-item-id">
+
         <div>
           <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Photo du vêtement</label>
           <label class="w-full py-3 px-4 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-medium text-center border border-dashed border-stone-300 transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -286,7 +288,7 @@
           </div>
         </div>
 
-        <button type="submit" class="w-full py-3 bg-stone-900 text-white rounded-xl text-xs font-medium active:bg-stone-800 shadow-sm mt-2">Enregistrer dans le vestiaire</button>
+        <button type="submit" id="modal-submit-btn" class="w-full py-3 bg-stone-900 text-white rounded-xl text-xs font-medium active:bg-stone-800 shadow-sm mt-2">Enregistrer dans le vestiaire</button>
       </form>
     </div>
   </div>
@@ -358,23 +360,61 @@
       if (tab === 'stats') updateStats();
     }
 
-    function updateSubcategoriesSelect() {
+    function updateSubcategoriesSelect(selectedSubcategory = null) {
       const cat = document.getElementById('item-category').value;
       const subSelect = document.getElementById('item-subcategory');
       const list = subcategoryMap[cat] || [];
       subSelect.innerHTML = list.map(sub => `<option value="${sub}">${sub}</option>`).join('');
+      if (selectedSubcategory && list.includes(selectedSubcategory)) {
+        subSelect.value = selectedSubcategory;
+      }
     }
 
-    function openModal() {
-      updateSubcategoriesSelect();
+    function openModal(editItem = null) {
+      document.getElementById('add-form').reset();
+      currentCompressedPhoto = '';
+
+      if (editItem) {
+        document.getElementById('modal-title').innerText = "Modifier la Pièce";
+        document.getElementById('modal-submit-btn').innerText = "Mettre à jour la pièce";
+        document.getElementById('edit-item-id').value = editItem.id;
+        document.getElementById('item-name').value = editItem.name;
+        document.getElementById('item-category').value = editItem.category;
+        updateSubcategoriesSelect(editItem.subcategory);
+        document.getElementById('item-color').value = editItem.color || 'noir';
+        document.getElementById('item-season').value = editItem.season || 'Toutes';
+        document.getElementById('item-image-url').value = editItem.image.startsWith('data:') ? '' : editItem.image;
+        
+        if (editItem.image) {
+          document.getElementById('image-preview').src = editItem.image;
+          document.getElementById('image-preview-container').classList.remove('hidden');
+        } else {
+          document.getElementById('image-preview-container').classList.add('hidden');
+        }
+      } else {
+        document.getElementById('modal-title').innerText = "Nouvelle Pièce";
+        document.getElementById('modal-submit-btn').innerText = "Enregistrer dans le vestiaire";
+        document.getElementById('edit-item-id').value = '';
+        document.getElementById('image-preview-container').classList.add('hidden');
+        updateSubcategoriesSelect();
+      }
+
       document.getElementById('add-modal').classList.remove('hidden');
     }
 
     function closeModal() {
       document.getElementById('add-modal').classList.add('hidden');
       document.getElementById('add-form').reset();
+      document.getElementById('edit-item-id').value = '';
       currentCompressedPhoto = '';
       document.getElementById('image-preview-container').classList.add('hidden');
+    }
+
+    function editItem(id) {
+      const item = items.find(i => i.id === id);
+      if (item) {
+        openModal(item);
+      }
     }
 
     function filterCategory(cat) {
@@ -382,28 +422,47 @@
       currentSubcategoryFilter = 'All';
       
       document.querySelectorAll('.filter-main-btn').forEach(btn => {
-        const isSelected = (cat === 'All' && btn.innerText === 'Tout') || btn.innerText.includes(cat);
-        btn.className = isSelected 
-          ? 'filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-stone-900 text-white whitespace-nowrap shadow-sm'
-          : 'filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap';
+        btn.className = 'filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap';
       });
 
+      const activeBtn = document.getElementById(`btn-cat-${cat}`);
+      if (activeBtn) {
+        activeBtn.className = 'filter-main-btn px-3 py-1.5 rounded-full text-xs font-medium bg-stone-900 text-white whitespace-nowrap shadow-sm';
+      }
+
+      renderSubcategoryFilters();
+      renderDressing();
+    }
+
+    function renderSubcategoryFilters() {
       const subContainer = document.getElementById('subcategory-filters');
-      if (cat !== 'All' && subcategoryMap[cat]) {
+      if (currentCategoryFilter !== 'All' && subcategoryMap[currentCategoryFilter]) {
         subContainer.classList.remove('hidden');
-        const subs = subcategoryMap[cat];
-        subContainer.innerHTML = `<button onclick="filterSubcategory('All')" class="px-2.5 py-1 rounded-lg ${currentSubcategoryFilter === 'All' ? 'bg-stone-200 text-stone-900 font-semibold' : 'bg-stone-100 text-stone-500'}">Tout ${cat}</button>` +
-          subs.map(s => `<button onclick="filterSubcategory('${s}')" class="px-2.5 py-1 rounded-lg ${currentSubcategoryFilter === s ? 'bg-stone-200 text-stone-900 font-semibold' : 'bg-stone-100 text-stone-500'}">${s}</button>`).join('');
+        const subs = subcategoryMap[currentCategoryFilter];
+        
+        const allBtnClass = currentSubcategoryFilter === 'All' 
+          ? 'px-2.5 py-1 rounded-lg bg-stone-900 text-white font-semibold' 
+          : 'px-2.5 py-1 rounded-lg bg-stone-200 text-stone-700';
+
+        let html = `<button onclick="filterSubcategory('All')" class="${allBtnClass}">Tout ${currentCategoryFilter}</button>`;
+        
+        subs.forEach(s => {
+          const btnClass = currentSubcategoryFilter === s 
+            ? 'px-2.5 py-1 rounded-lg bg-stone-900 text-white font-semibold' 
+            : 'px-2.5 py-1 rounded-lg bg-stone-200 text-stone-700';
+          html += `<button onclick="filterSubcategory('${s}')" class="${btnClass}">${s}</button>`;
+        });
+
+        subContainer.innerHTML = html;
       } else {
         subContainer.classList.add('hidden');
       }
-
-      renderDressing();
     }
 
     function filterSubcategory(sub) {
       currentSubcategoryFilter = sub;
-      filterCategory(currentCategoryFilter);
+      renderSubcategoryFilters();
+      renderDressing();
     }
 
     function toggleCleanFilter() {
@@ -447,9 +506,14 @@
                 ${item.clean ? '✓ Propre' : '🧺 Au linge'}
               </button>
 
-              <button onclick="promptDelete(${item.id})" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 text-white backdrop-blur-md flex items-center justify-center active:scale-90">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-              </button>
+              <div class="absolute top-2 right-2 flex gap-1">
+                <button onclick="editItem(${item.id})" class="w-7 h-7 rounded-full bg-black/40 text-white backdrop-blur-md flex items-center justify-center active:scale-90">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                </button>
+                <button onclick="promptDelete(${item.id})" class="w-7 h-7 rounded-full bg-black/40 text-white backdrop-blur-md flex items-center justify-center active:scale-90">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </div>
             </div>
             
             <div class="p-2.5">
@@ -516,24 +580,42 @@
 
     function handleFormSubmit(e) {
       e.preventDefault();
-      const imageUrl = currentCompressedPhoto || document.getElementById('item-image-url').value || 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400';
+      const editId = document.getElementById('edit-item-id').value;
       const cat = document.getElementById('item-category').value;
-      
-      const newItem = {
-        id: Date.now(),
-        name: document.getElementById('item-name').value,
-        category: cat,
-        subcategory: document.getElementById('item-subcategory').value || cat,
-        color: document.getElementById('item-color').value,
-        season: document.getElementById('item-season').value,
-        timesWorn: 0,
-        clean: true,
-        image: imageUrl
-      };
+      const inputUrl = document.getElementById('item-image-url').value;
 
-      items.push(newItem);
+      if (editId) {
+        const item = items.find(i => i.id == editId);
+        if (item) {
+          item.name = document.getElementById('item-name').value;
+          item.category = cat;
+          item.subcategory = document.getElementById('item-subcategory').value || cat;
+          item.color = document.getElementById('item-color').value;
+          item.season = document.getElementById('item-season').value;
+          if (currentCompressedPhoto) {
+            item.image = currentCompressedPhoto;
+          } else if (inputUrl) {
+            item.image = inputUrl;
+          }
+        }
+      } else {
+        const imageUrl = currentCompressedPhoto || inputUrl || 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400';
+        const newItem = {
+          id: Date.now(),
+          name: document.getElementById('item-name').value,
+          category: cat,
+          subcategory: document.getElementById('item-subcategory').value || cat,
+          color: document.getElementById('item-color').value,
+          season: document.getElementById('item-season').value,
+          timesWorn: 0,
+          clean: true,
+          image: imageUrl
+        };
+        items.push(newItem);
+      }
+
       if (!saveItemsToStorage()) {
-        items.pop();
+        if (!editId) items.pop();
       } else {
         renderDressing();
         closeModal();
@@ -600,7 +682,7 @@
       let candidates = cleanItems.filter(item => {
         if (currentTemperature !== null) {
           if (currentTemperature < 15 && (item.subcategory === 'Short' || item.subcategory === 'Claquettes / Sandales')) return false;
-          if (currentTemperature > 22 && (item.subcategory === 'Pull' || item.subcategory === 'Manteau' || item.season === 'Froid')) return false;
+          if (currentTemperature > 22 && (item.subcategory === 'Pull' || item.subcategory === 'Veste / Manteau' || item.season === 'Froid')) return false;
         }
         return true;
       });
