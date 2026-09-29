@@ -27,6 +27,14 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
+
+  <!-- PWA Configuration -->
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
 </head>
 <body class="h-full flex flex-col font-sans text-stone-800 antialiased bg-stone-100 select-none">
 
@@ -475,7 +483,6 @@
       });
     }
 
-    // --- ALGORITHME HARMONIE DES COULEURS (IA) ---
     function detectColor(name) {
       const n = name.toLowerCase();
       if (n.includes('noir') || n.includes('black') || n.includes('sombre')) return 'noir';
@@ -496,22 +503,19 @@
         return;
       }
 
-      // Sélection intelligente avec filtre de couleur
       currentGeneratedOutfit = {};
       let selectedColors = [];
 
       categories.forEach(cat => {
         const candidates = cleanItems.filter(i => i.category === cat);
         if (candidates.length > 0) {
-          // Préférer les pièces qui s'accordent en couleur
           let bestCandidates = candidates.filter(item => {
             const colorGroup = detectColor(item.name);
-            // Si on a déjà une couleur vive, privilégier le neutre
             if (selectedColors.includes('vif') && colorGroup === 'vif') return false;
             return true;
           });
 
-          if (bestCandidates.length === 0) bestCandidates = candidates; // Fallback
+          if (bestCandidates.length === 0) bestCandidates = candidates;
 
           const chosen = bestCandidates[Math.floor(Math.random() * bestCandidates.length)];
           currentGeneratedOutfit[cat] = chosen;
