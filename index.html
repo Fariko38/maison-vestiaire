@@ -2,12 +2,14 @@
 <html lang="fr" class="h-full bg-stone-50">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maison Vestiaire — Garde-Robe Virtuelle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Maison Vestiaire — Mobile</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
   <script>
     tailwind.config = {
       theme: {
@@ -20,318 +22,413 @@
       }
     }
   </script>
+  <style>
+    .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
 </head>
-<body class="h-full flex flex-col font-sans text-stone-800 antialiased pb-20 sm:pb-0">
+<body class="h-full flex flex-col font-sans text-stone-800 antialiased bg-stone-100 select-none">
 
-  <!-- En-tête avec Logo Luxe Stylé -->
-  <header class="border-b border-stone-200 bg-white/90 backdrop-blur-md sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex items-center gap-3">
-          <!-- Logo SVG Stylé -->
-          <div class="w-10 h-10 rounded-2xl bg-stone-900 flex items-center justify-center text-amber-100 shadow-md ring-1 ring-stone-900/10">
-            <svg class="w-6 h-6 stroke-current" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Cintre stylisé & Monogramme MV -->
-              <path d="M18 8C16.3431 8 15 9.34315 15 11C15 12.3 15.8 13.4 17 13.8V15.2L7.5 19.5C6.5 20 6 21 6 22V23C6 23.5 6.5 24 7 24H29C29.5 24 30 23.5 30 23V22C30 21 29.5 20 28.5 19.5L19 15.2V13.8C20.2 13.4 21 12.3 21 11C21 9.34315 19.6569 8 18 8Z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12 28L15 22L18 28L21 22L24 28" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div>
-            <span class="font-serif text-lg font-semibold text-stone-900 block leading-none">Maison Vestiaire</span>
-            <span class="text-[9px] font-medium tracking-widest uppercase text-stone-400">Haute Styling IA</span>
-          </div>
-        </div>
-
-        <!-- Navigation Desktop -->
-        <nav class="hidden sm:flex gap-1 bg-stone-100 p-1 rounded-xl">
-          <button id="nav-dressing" onclick="switchTab('dressing')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-stone-900 shadow-sm">Garde-Robe</button>
-          <button id="nav-stylist" onclick="switchTab('stylist')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-stone-600">Styliste IA</button>
-          <button id="nav-saved" onclick="switchTab('saved')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-stone-600">Looks Favoris</button>
-          <button id="nav-suitcase" onclick="switchTab('suitcase')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-stone-600">Valise</button>
-        </nav>
+  <!-- En-tête mobile compacte avec Logo Haut de Gamme -->
+  <header class="bg-white/90 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-30 px-4 py-3 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-2.5">
+      <!-- Monogramme Logo Haute Couture SVG -->
+      <div class="w-9 h-9 rounded-full bg-stone-900 flex items-center justify-center text-amber-100 shadow-md">
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 100 100">
+          <path d="M 20 75 L 20 25 L 35 25 L 50 60 L 65 25 L 80 25 L 80 75 L 68 75 L 68 42 L 54 75 L 46 75 L 32 42 L 32 75 Z" />
+          <path d="M 30 78 L 70 78 L 70 82 L 30 82 Z" />
+        </svg>
+      </div>
+      <div>
+        <span class="font-serif text-base font-semibold text-stone-900 tracking-tight block leading-none">Maison Vestiaire</span>
+        <span class="text-[9px] text-stone-400 font-sans tracking-widest uppercase">Garde-Robe Virtuelle</span>
       </div>
     </div>
+    
+    <button onclick="openModal()" class="w-8 h-8 rounded-full bg-stone-900 text-white flex items-center justify-center shadow-sm active:scale-95 transition-transform">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    </button>
   </header>
 
-  <!-- Contenu Principal -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Contenu Principal défilant -->
+  <main class="flex-1 overflow-y-auto px-3 py-4 pb-24 no-scrollbar">
 
-    <!-- 1. Onglet Garde-Robe -->
-    <section id="tab-dressing" class="space-y-6">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 class="font-serif text-2xl sm:text-3xl text-stone-900">Ma Garde-Robe</h1>
-          <p class="text-xs sm:text-sm text-stone-500 mt-0.5">Vos vêtements, état d'entretien et historique.</p>
-        </div>
-        <button onclick="openModal()" class="hidden sm:flex px-4 py-2 bg-stone-900 text-white text-xs font-medium rounded-xl hover:bg-stone-800 transition-all items-center gap-2 shadow-sm">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-          Ajouter une pièce
-        </button>
+    <!-- 1. GARDEROBE TAB -->
+    <section id="tab-dressing" class="space-y-4">
+      <!-- Filtres rapides -->
+      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+        <button onclick="filterCategory('All')" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-stone-900 text-white whitespace-nowrap shadow-sm">Tout</button>
+        <button onclick="filterCategory('Haut')" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Hauts</button>
+        <button onclick="filterCategory('Bas')" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Bas</button>
+        <button onclick="filterCategory('Chaussures')" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Chaussures</button>
+        <button onclick="filterCategory('Accessoire')" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Accessoires</button>
       </div>
 
-      <div id="dressing-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
+      <!-- Grille d'articles -->
+      <div id="dressing-grid" class="grid grid-cols-2 gap-3"></div>
     </section>
 
-    <!-- 2. Onglet Styliste IA -->
-    <section id="tab-stylist" class="hidden space-y-6">
-      <div class="max-w-xl">
-        <h1 class="font-serif text-2xl sm:text-3xl text-stone-900">Styliste IA & Météo</h1>
-        <p class="text-xs sm:text-sm text-stone-500 mt-0.5">Recommandations en temps réel basées sur vos vêtements propres.</p>
-      </div>
-
-      <!-- Widget Météo -->
-      <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/60 p-4 rounded-2xl flex items-center justify-between shadow-sm">
-        <div class="flex items-center gap-3">
-          <span class="text-2xl" id="weather-icon">🌤️</span>
+    <!-- 2. STYLISTE IA TAB -->
+    <section id="tab-stylist" class="hidden space-y-4">
+      <div class="bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl p-4 text-white shadow-md relative overflow-hidden">
+        <div class="flex items-center justify-between">
           <div>
-            <div class="text-xs font-semibold text-amber-900 uppercase tracking-wider" id="weather-location">Détection météo...</div>
-            <div class="text-xs text-amber-700" id="weather-desc">Cliquez pour détecter votre position</div>
+            <div class="text-[10px] uppercase font-semibold tracking-wider opacity-80" id="weather-location">Météo Locale</div>
+            <div class="text-xl font-serif font-medium mt-0.5" id="weather-temp">--°C</div>
+            <div class="text-xs opacity-90 mt-1" id="weather-desc">Détection GPS...</div>
           </div>
+          <button onclick="getLiveWeather()" class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white active:scale-95">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          </button>
         </div>
-        <button onclick="getLiveWeather()" class="px-3 py-1.5 bg-amber-900 text-white text-xs font-medium rounded-xl hover:bg-amber-800">Actualiser</button>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="bg-white p-5 rounded-2xl border border-stone-200 space-y-4 shadow-sm">
-          <h2 class="font-medium text-stone-900 text-sm">Critères du Look</h2>
-          
+      <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm space-y-3">
+        <h2 class="font-serif text-base font-semibold text-stone-900">Générateur de Look</h2>
+        <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-xs text-stone-500 uppercase tracking-wider mb-1">Occasion / Dress Code</label>
-            <select id="outfit-occasion" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-              <option value="Décontracté">Décontracté / Quotidien</option>
-              <option value="Travail">Business / Travail</option>
-              <option value="Soirée">Soirée / Sortie</option>
-              <option value="Sport">Sport / Activewear</option>
+            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Occasion</label>
+            <select id="outfit-occasion" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
+              <option value="Décontracté">Décontracté</option>
+              <option value="Travail">Travail</option>
+              <option value="Soirée">Soirée</option>
+              <option value="Sport">Sport</option>
             </select>
           </div>
-
           <div>
-            <label class="block text-xs text-stone-500 uppercase tracking-wider mb-1">Saison ciblée</label>
-            <select id="outfit-season" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-              <option value="Auto">Ajuster selon Météo</option>
+            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Saison</label>
+            <select id="outfit-season" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
+              <option value="Auto">Météo Auto</option>
               <option value="Printemps">Printemps</option>
               <option value="Été">Été</option>
               <option value="Automne">Automne</option>
               <option value="Hiver">Hiver</option>
             </select>
           </div>
-
-          <button onclick="generateOutfit()" class="w-full py-2.5 bg-stone-900 text-white rounded-xl text-xs font-medium hover:bg-stone-800">Générer le Look</button>
         </div>
+        <button onclick="generateOutfit()" class="w-full py-3 bg-stone-900 text-white rounded-xl text-xs font-medium active:bg-stone-800 shadow-sm">Composer une tenue (Propres uniquement)</button>
+      </div>
 
-        <div class="md:col-span-2 space-y-4">
-          <div id="outfit-explanation" class="p-3 bg-stone-100 rounded-xl text-xs text-stone-700 hidden"></div>
-          <div id="outfit-display" class="grid grid-cols-2 gap-3"></div>
-          <div id="outfit-actions" class="hidden flex justify-end gap-2 pt-2">
-            <button onclick="markOutfitAsWorn()" class="px-4 py-2 bg-stone-100 border border-stone-200 text-stone-800 text-xs font-medium rounded-xl hover:bg-stone-200">Porté aujourd'hui</button>
-            <button onclick="saveCurrentOutfit()" class="px-4 py-2 bg-amber-600 text-white text-xs font-medium rounded-xl hover:bg-amber-700">Enregistrer en Favori</button>
-          </div>
-        </div>
+      <div id="outfit-explanation" class="p-3 bg-amber-50 border border-amber-200/60 rounded-xl text-xs text-amber-900 hidden"></div>
+      <div id="outfit-display" class="grid grid-cols-2 gap-2.5"></div>
+      
+      <div id="outfit-actions" class="hidden grid grid-cols-2 gap-2 pt-1">
+        <button onclick="markOutfitAsWorn()" class="py-2.5 bg-white border border-stone-200 text-stone-800 text-xs font-medium rounded-xl active:bg-stone-50">Marquer Porté</button>
+        <button onclick="saveCurrentOutfit()" class="py-2.5 bg-amber-600 text-white text-xs font-medium rounded-xl active:bg-amber-700">Sauvegarder Favori</button>
       </div>
     </section>
 
-    <!-- 3. Onglet Looks Favoris -->
-    <section id="tab-saved" class="hidden space-y-6">
-      <div>
-        <h1 class="font-serif text-2xl sm:text-3xl text-stone-900">Mes Looks Favoris</h1>
-        <p class="text-xs sm:text-sm text-stone-500 mt-0.5">Vos tenues enregistrées.</p>
-      </div>
-      <div id="saved-outfits-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    <!-- 3. LOOKS FAVORIS TAB -->
+    <section id="tab-saved" class="hidden space-y-3">
+      <h1 class="font-serif text-xl font-semibold text-stone-900">Vos Tenues Enregistrées</h1>
+      <div id="saved-outfits-grid" class="space-y-3"></div>
     </section>
 
-    <!-- 4. Onglet Valise -->
-    <section id="tab-suitcase" class="hidden space-y-6">
-      <div>
-        <h1 class="font-serif text-2xl sm:text-3xl text-stone-900">Générateur de Valise</h1>
-        <p class="text-xs sm:text-sm text-stone-500 mt-0.5">Sélection optimale pour vos déplacements.</p>
-      </div>
-
-      <div class="bg-white p-5 rounded-2xl border border-stone-200 max-w-md space-y-4 shadow-sm">
-        <div>
-          <label class="block text-xs text-stone-500 uppercase tracking-wider mb-1">Destination & Durée</label>
-          <div class="grid grid-cols-2 gap-2">
-            <input type="text" id="trip-destination" placeholder="ex: Paris" class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-            <input type="number" id="trip-days" placeholder="Jours" min="1" value="3" class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-          </div>
+    <!-- 4. VALISE TAB -->
+    <section id="tab-suitcase" class="hidden space-y-4">
+      <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm space-y-3">
+        <h1 class="font-serif text-lg font-semibold text-stone-900">Préparer une Valise</h1>
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" id="trip-destination" placeholder="Destination" class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
+          <input type="number" id="trip-days" placeholder="Nombre de jours" min="1" value="3" class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
         </div>
-        <button onclick="generateSuitcase()" class="w-full py-2.5 bg-stone-900 text-white rounded-xl text-xs font-medium hover:bg-stone-800">Préparer ma valise</button>
+        <button onclick="generateSuitcase()" class="w-full py-2.5 bg-stone-900 text-white rounded-xl text-xs font-medium">Générer la Sélection</button>
       </div>
-
-      <div id="suitcase-result" class="grid grid-cols-2 sm:grid-cols-4 gap-4"></div>
+      <div id="suitcase-result" class="grid grid-cols-2 gap-2.5"></div>
     </section>
 
   </main>
 
-  <!-- Navigation Mobile Fixe en Bas (Bottom Navigation Bar) -->
-  <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200 z-40 px-2 py-2">
+  <!-- Navigation fixe en bas (Bottom Navigation Bar Mobile) -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-stone-200/80 z-30 px-3 py-2 pb-safe shadow-lg">
     <div class="flex justify-around items-center">
-      <button id="mob-nav-dressing" onclick="switchTab('dressing')" class="flex flex-col items-center gap-1 text-stone-900">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-        <span class="text-[10px] font-medium">Garde-Robe</span>
+      <button onclick="switchTab('dressing')" id="nav-dressing" class="nav-item flex flex-col items-center gap-1 text-stone-900">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        <span class="text-[10px] font-medium">Dressing</span>
       </button>
-      <button id="mob-nav-stylist" onclick="switchTab('stylist')" class="flex flex-col items-center gap-1 text-stone-400">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+
+      <button onclick="switchTab('stylist')" id="nav-stylist" class="nav-item flex flex-col items-center gap-1 text-stone-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         <span class="text-[10px] font-medium">Styliste IA</span>
       </button>
-      <button id="mob-nav-saved" onclick="switchTab('saved')" class="flex flex-col items-center gap-1 text-stone-400">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+
+      <button onclick="switchTab('saved')" id="nav-saved" class="nav-item flex flex-col items-center gap-1 text-stone-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
         <span class="text-[10px] font-medium">Favoris</span>
       </button>
-      <button id="mob-nav-suitcase" onclick="switchTab('suitcase')" class="flex flex-col items-center gap-1 text-stone-400">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+
+      <button onclick="switchTab('suitcase')" id="nav-suitcase" class="nav-item flex flex-col items-center gap-1 text-stone-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
         <span class="text-[10px] font-medium">Valise</span>
       </button>
     </div>
-  </div>
+  </nav>
 
-  <!-- Bouton Flottant Mobile d'Ajout (FAB) -->
-  <button onclick="openModal()" class="sm:hidden fixed right-4 bottom-20 z-40 w-12 h-12 bg-stone-900 text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-  </button>
-
-  <!-- Modal d'ajout de pièce -->
-  <div id="add-modal" class="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center hidden p-0 sm:p-4">
-    <div class="bg-white rounded-t-3xl sm:rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center">
-        <h3 class="font-serif text-xl text-stone-900">Ajouter une pièce</h3>
-        <button onclick="closeModal()" class="p-1 text-stone-400 hover:text-stone-600">
+  <!-- Modal d'ajout de pièce avec Appareil Photo & Compression Automatique -->
+  <div id="add-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center hidden">
+    <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+        <h3 class="font-serif text-lg font-semibold text-stone-900">Nouvelle Pièce</h3>
+        <button onclick="closeModal()" class="text-stone-400 p-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
-      
-      <form id="add-form" onsubmit="handleFormSubmit(event)" class="space-y-3">
-        <div>
-          <label class="block text-xs text-stone-500 uppercase tracking-wider mb-1">Photo du vêtement</label>
-          
-          <label class="w-full cursor-pointer py-3 px-3 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-medium text-center border border-stone-200 transition-all flex items-center justify-center gap-2 active:scale-98">
-            <svg class="w-4 h-4 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-              <circle cx="12" cy="13" r="3"/>
-            </svg>
-            Prendre photo / Importer
-            <input type="file" id="item-file" accept="image/*" capture="environment" onchange="previewImage(event)" class="hidden">
-          </label>
 
-          <input type="url" id="item-image" placeholder="Ou coller une URL d'image" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs mt-2">
+      <form id="add-form" onsubmit="handleFormSubmit(event)" class="space-y-3">
+        <!-- Bouton Photo déclenchant directement l'appareil photo du S25 -->
+        <div>
+          <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Photo du vêtement</label>
+          <label class="w-full py-3 px-4 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-medium text-center border border-dashed border-stone-300 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>
+            Prendre une photo avec l'appareil
+            <input type="file" id="item-file" accept="image/*" capture="environment" onchange="processImage(event)" class="hidden">
+          </label>
+          <input type="url" id="item-image-url" placeholder="Ou coller une URL d'image" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs mt-2">
           
-          <div id="image-preview-container" class="mt-2 hidden aspect-square w-20 rounded-lg overflow-hidden border border-stone-200 bg-stone-100">
-            <img id="image-preview" class="w-full h-full object-cover">
+          <!-- Prévisualisation image -->
+          <div id="image-preview-container" class="mt-2 hidden flex items-center gap-2">
+            <img id="image-preview" class="w-16 h-16 object-cover rounded-xl border border-stone-200">
+            <span class="text-[10px] text-emerald-600 font-medium">✓ Photo optimisée pour la mémoire</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Désignation</label>
+          <input type="text" id="item-name" required placeholder="ex: Blazer Laine, Chemise Soie..." class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Catégorie</label>
+            <select id="item-category" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
+              <option value="Haut">Haut</option>
+              <option value="Bas">Bas</option>
+              <option value="Chaussures">Chaussures</option>
+              <option value="Accessoire">Accessoire</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Couleur</label>
+            <select id="item-color" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
+              <option value="Blanc">Blanc</option>
+              <option value="Noir">Noir</option>
+              <option value="Bleu">Bleu</option>
+              <option value="Beige">Beige</option>
+              <option value="Gris">Gris</option>
+              <option value="Marron">Marron</option>
+            </select>
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-          <input type="text" id="item-name" required placeholder="Nom (ex: Veste blazer)" class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-          <select id="item-category" class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-            <option value="Haut">Haut</option>
-            <option value="Bas">Bas</option>
-            <option value="Chaussures">Chaussures</option>
-            <option value="Accessoire">Accessoire</option>
-          </select>
+          <div>
+            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Saison</label>
+            <select id="item-season" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
+              <option value="Printemps">Printemps</option>
+              <option value="Été">Été</option>
+              <option value="Automne">Automne</option>
+              <option value="Hiver">Hiver</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Occasion</label>
+            <select id="item-occasion" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
+              <option value="Décontracté">Décontracté</option>
+              <option value="Travail">Travail</option>
+              <option value="Soirée">Soirée</option>
+              <option value="Sport">Sport</option>
+            </select>
+          </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-2">
-          <select id="item-color" class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-            <option value="Blanc">Blanc</option>
-            <option value="Noir">Noir</option>
-            <option value="Bleu">Bleu</option>
-            <option value="Beige">Beige</option>
-            <option value="Gris">Gris</option>
-            <option value="Marron">Marron</option>
-          </select>
-          <select id="item-season" class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-            <option value="Printemps">Printemps</option>
-            <option value="Été">Été</option>
-            <option value="Automne">Automne</option>
-            <option value="Hiver">Hiver</option>
-          </select>
-          <select id="item-occasion" class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-            <option value="Décontracté">Décontracté</option>
-            <option value="Travail">Travail</option>
-            <option value="Soirée">Soirée</option>
-            <option value="Sport">Sport</option>
-          </select>
-        </div>
-
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal()" class="px-3 py-2 text-xs text-stone-500">Annuler</button>
-          <button type="submit" class="px-5 py-2 bg-stone-900 text-white rounded-xl text-xs font-medium">Sauvegarder</button>
-        </div>
+        <button type="submit" class="w-full py-3 bg-stone-900 text-white rounded-xl text-xs font-medium active:bg-stone-800 shadow-sm mt-2">Enregistrer dans la garde-robe</button>
       </form>
     </div>
   </div>
 
   <!-- Modal de confirmation de suppression -->
-  <div id="delete-modal" class="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-xl">
-      <h3 class="font-serif text-lg text-stone-900">Supprimer cet article ?</h3>
-      <p class="text-xs text-stone-500">Êtes-vous sûr de vouloir supprimer définitivement cette pièce de votre garde-robe ?</p>
-      <div class="flex justify-end gap-2 pt-2">
-        <button onclick="closeDeleteModal()" class="px-3 py-1.5 text-xs text-stone-500 rounded-xl hover:bg-stone-100">Annuler</button>
-        <button onclick="confirmDelete()" class="px-4 py-1.5 bg-red-600 text-white rounded-xl text-xs hover:bg-red-700">Supprimer</button>
+  <div id="delete-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-xs w-full p-5 space-y-3 text-center">
+      <div class="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      </div>
+      <h3 class="font-serif text-base font-semibold text-stone-900">Supprimer la pièce ?</h3>
+      <p class="text-xs text-stone-500">Cette action est définitive et retirera le vêtement de votre vestiaire.</p>
+      <div class="grid grid-cols-2 gap-2 pt-2">
+        <button onclick="closeDeleteModal()" class="py-2 text-xs text-stone-600 bg-stone-100 rounded-xl font-medium">Annuler</button>
+        <button onclick="confirmDelete()" class="py-2 text-xs text-white bg-red-600 rounded-xl font-medium">Supprimer</button>
       </div>
     </div>
   </div>
 
   <script>
     const defaultItems = [
-      { id: 1, name: 'Chemise en Soie', category: 'Haut', color: 'Blanc', season: 'Printemps', occasion: 'Travail', timesWorn: 3, image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400' },
-      { id: 2, name: 'Jean Brut Droit', category: 'Bas', color: 'Bleu', season: 'Printemps', occasion: 'Décontracté', timesWorn: 8, image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400' },
-      { id: 3, name: 'Mocassins Cuir', category: 'Chaussures', color: 'Noir', season: 'Printemps', occasion: 'Travail', timesWorn: 0, image: 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400' },
-      { id: 4, name: 'Sac Classique', category: 'Accessoire', color: 'Beige', season: 'Printemps', occasion: 'Soirée', timesWorn: 1, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400' }
+      { id: 1, name: 'Chemise en Soie', category: 'Haut', color: 'Blanc', season: 'Printemps', occasion: 'Travail', timesWorn: 3, clean: true, image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400' },
+      { id: 2, name: 'Jean Brut Droit', category: 'Bas', color: 'Bleu', season: 'Printemps', occasion: 'Décontracté', timesWorn: 8, clean: true, image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400' },
+      { id: 3, name: 'Mocassins Cuir', category: 'Chaussures', color: 'Noir', season: 'Printemps', occasion: 'Travail', timesWorn: 2, clean: true, image: 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400' },
+      { id: 4, name: 'Sac Classique', category: 'Accessoire', color: 'Beige', season: 'Printemps', occasion: 'Soirée', timesWorn: 1, clean: true, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400' }
     ];
 
     let items = JSON.parse(localStorage.getItem('wardrobe_v2_items')) || defaultItems;
     let savedOutfits = JSON.parse(localStorage.getItem('wardrobe_v2_saved')) || [];
+    let currentCategoryFilter = 'All';
     let currentGeneratedOutfit = null;
-    let currentPhotoUrl = '';
+    let currentCompressedPhoto = '';
     let itemToDeleteId = null;
 
     function switchTab(tab) {
       ['dressing', 'stylist', 'saved', 'suitcase'].forEach(t => {
         document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tab);
-        
-        // Navigation Desktop
-        const desktopBtn = document.getElementById(`nav-${t}`);
-        if (desktopBtn) {
-          desktopBtn.className = t === tab 
-            ? 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-stone-900 shadow-sm'
-            : 'px-3 py-1.5 rounded-lg text-xs font-medium text-stone-600';
-        }
-
-        // Navigation Mobile
-        const mobBtn = document.getElementById(`mob-nav-${t}`);
-        if (mobBtn) {
-          mobBtn.className = t === tab
-            ? 'flex flex-col items-center gap-1 text-stone-900 font-semibold'
-            : 'flex flex-col items-center gap-1 text-stone-400';
+        const btn = document.getElementById(`nav-${t}`);
+        if (t === tab) {
+          btn.classList.replace('text-stone-400', 'text-stone-900');
+        } else {
+          btn.classList.replace('text-stone-900', 'text-stone-400');
         }
       });
-
       if (tab === 'saved') renderSavedOutfits();
+    }
+
+    function filterCategory(cat) {
+      currentCategoryFilter = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        const isSelected = btn.innerText.includes(cat) || (cat === 'All' && btn.innerText === 'Tout');
+        btn.className = isSelected 
+          ? 'filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-stone-900 text-white whitespace-nowrap shadow-sm'
+          : 'filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap';
+      });
+      renderDressing();
     }
 
     function renderDressing() {
       const grid = document.getElementById('dressing-grid');
-      if (items.length === 0) {
-        grid.innerHTML = '<div class="text-xs text-stone-400 col-span-full text-center py-8">Votre garde-robe est vide. Utilisez le bouton + pour ajouter une pièce.</div>';
+      const filtered = currentCategoryFilter === 'All' 
+        ? items 
+        : items.filter(i => i.category === currentCategoryFilter);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="col-span-2 text-center py-8 text-xs text-stone-400">Aucun vêtement dans cette catégorie.</div>';
         return;
       }
-      grid.innerHTML = items.map(item => `
-        <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden p-2 text-xs space-y-2 relative shadow-sm">
-          <div class="aspect-square rounded-xl overflow-hidden bg-stone-100 relative">
-            <img src="${item.image}" class="w-full h-full object-cover">
-            <span class="absolute top-1.5 left-1.5 text-[9px] px-1.5 py-0.5 rounded-full bg-stone-900/70 backdrop-blur-sm text-white font-medium">${item.timesWorn || 0} portés</span>
-            
-            <button onclick="promptDelete(${item.id})" class="absolute top-1.5 right-1.5 p-1.5 bg-white/90 text-stone-600 hover:text-red-600 rounded-full shadow-sm">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            </button>
-          </div>
+
+      grid.innerHTML = filtered.map(item => `
+        <div class="bg-white rounded-2xl border border-stone-200/80 overflow-hidden shadow-sm flex flex-col justify-between">
           <div>
-            <div class="font-medium text-stone-900 truncate">${item.name}</div>
-            <div class="text-[10px] text-stone-400">${item.category} • ${item.occasion}</div>
+            <div class="aspect-square bg-stone-100 relative overflow-hidden">
+              <img src="${item.image}" class="w-full h-full object-cover">
+              
+              <!-- Badge statut propreté -->
+              <button onclick="toggleCleanStatus(${item.id})" class="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[9px] font-semibold backdrop-blur-md shadow-sm transition-all ${item.clean ? 'bg-emerald-500/90 text-white' : 'bg-amber-500/90 text-white'}">
+                ${item.clean ? '✓ Propre' : '🧺 Au linge'}
+              </button>
+
+              <!-- Bouton Suppression -->
+              <button onclick="promptDelete(${item.id})" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 text-white backdrop-blur-md flex items-center justify-center active:scale-90">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
+            
+            <div class="p-2.5">
+              <div class="font-medium text-xs text-stone-900 truncate">${item.name}</div>
+              <div class="text-[10px] text-stone-400 mt-0.5">${item.category} • ${item.occasion}</div>
+            </div>
+          </div>
+
+          <div class="px-2.5 pb-2.5 flex justify-between items-center text-[10px] text-stone-500 border-t border-stone-100 pt-1.5">
+            <span>Porté: <strong>${item.timesWorn || 0}x</strong></span>
+            <span class="text-stone-400">${item.season}</span>
           </div>
         </div>
       `).join('');
+    }
+
+    function toggleCleanStatus(id) {
+      const item = items.find(i => i.id === id);
+      if (item) {
+        item.clean = !item.clean;
+        saveItemsToStorage();
+        renderDressing();
+      }
+    }
+
+    /* REDIMENSIONNEMENT & COMPRESSION DES PHOTOS DU S25 */
+    function processImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          // Création d'un Canvas pour redimensionner la photo
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 600;
+          const MAX_HEIGHT = 600;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Compression en JPEG qualité 75% (passe de ~10Mo à ~60Ko)
+          currentCompressedPhoto = canvas.toDataURL('image/jpeg', 0.75);
+
+          document.getElementById('image-preview').src = currentCompressedPhoto;
+          document.getElementById('image-preview-container').classList.remove('hidden');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const imageUrl = currentCompressedPhoto || document.getElementById('item-image-url').value || 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400';
+      
+      const newItem = {
+        id: Date.now(),
+        name: document.getElementById('item-name').value,
+        category: document.getElementById('item-category').value,
+        color: document.getElementById('item-color').value,
+        season: document.getElementById('item-season').value,
+        occasion: document.getElementById('item-occasion').value,
+        timesWorn: 0,
+        clean: true,
+        image: imageUrl
+      };
+
+      items.push(newItem);
+      if (!saveItemsToStorage()) {
+        items.pop(); // Annulation si dépassement quota mémoire
+      } else {
+        renderDressing();
+        closeModal();
+      }
+    }
+
+    function saveItemsToStorage() {
+      try {
+        localStorage.setItem('wardrobe_v2_items', JSON.stringify(items));
+        return true;
+      } catch (e) {
+        alert("La mémoire du téléphone est pleine. Essayez de supprimer quelques pièces ou photos.");
+        return false;
+      }
     }
 
     function promptDelete(id) {
@@ -345,30 +442,20 @@
     }
 
     function confirmDelete() {
-      if (itemToDeleteId !== null) {
-        items = items.filter(item => item.id !== itemToDeleteId);
-        localStorage.setItem('wardrobe_v2_items', JSON.stringify(items));
+      if (itemToDeleteId) {
+        items = items.filter(i => i.id !== itemToDeleteId);
+        saveItemsToStorage();
         renderDressing();
         closeDeleteModal();
       }
     }
 
-    function previewImage(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          currentPhotoUrl = e.target.result;
-          document.getElementById('image-preview').src = currentPhotoUrl;
-          document.getElementById('image-preview-container').classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
     function getLiveWeather() {
-      if (!navigator.geolocation) return;
-      document.getElementById('weather-location').innerText = "Localisation en cours...";
+      if (!navigator.geolocation) {
+        alert("Géolocalisation indisponible");
+        return;
+      }
+      document.getElementById('weather-location').innerText = "Géolocalisation...";
       navigator.geolocation.getCurrentPosition(pos => {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
@@ -376,8 +463,9 @@
           .then(res => res.json())
           .then(data => {
             const temp = Math.round(data.current_weather.temperature);
-            document.getElementById('weather-location').innerText = `${temp}°C — Météo Détectée`;
-            document.getElementById('weather-desc').innerText = temp < 15 ? "Temps frais : Tenue d'Automne/Hiver recommandée" : "Temps doux : Look léger recommandé";
+            document.getElementById('weather-temp').innerText = `${temp}°C`;
+            document.getElementById('weather-location').innerText = "Météo Actuelle";
+            document.getElementById('weather-desc').innerText = temp < 15 ? "Temps frais (Tenue d'Hiver)" : "Temps doux (Tenue légère)";
             document.getElementById('outfit-season').value = temp < 15 ? "Hiver" : "Printemps";
           });
       });
@@ -388,10 +476,13 @@
       const season = document.getElementById('outfit-season').value;
       const categories = ['Haut', 'Bas', 'Chaussures', 'Accessoire'];
       
+      // Sélectionne uniquement les vêtements PROPRES
+      const cleanItems = items.filter(i => i.clean !== false);
+
       currentGeneratedOutfit = {};
       categories.forEach(cat => {
-        let match = items.filter(i => i.category === cat && (season === 'Auto' || i.season === season) && i.occasion === occasion);
-        if (match.length === 0) match = items.filter(i => i.category === cat);
+        let match = cleanItems.filter(i => i.category === cat && (season === 'Auto' || i.season === season) && i.occasion === occasion);
+        if (match.length === 0) match = cleanItems.filter(i => i.category === cat);
         if (match.length > 0) currentGeneratedOutfit[cat] = match[Math.floor(Math.random() * match.length)];
       });
 
@@ -399,7 +490,7 @@
       display.innerHTML = categories.map(cat => {
         const item = currentGeneratedOutfit[cat];
         return item ? `
-          <div class="bg-white p-2 border border-stone-200 rounded-xl">
+          <div class="bg-white p-2 border border-stone-200/80 rounded-xl">
             <img src="${item.image}" class="aspect-square object-cover rounded-lg mb-1 w-full">
             <div class="text-[11px] font-medium text-stone-900 truncate">${item.name}</div>
             <div class="text-[9px] text-stone-400">${cat} • ${item.color}</div>
@@ -408,7 +499,7 @@
       }).join('');
 
       document.getElementById('outfit-explanation').classList.remove('hidden');
-      document.getElementById('outfit-explanation').innerHTML = `Look assemblé pour une occasion <strong>${occasion}</strong>.`;
+      document.getElementById('outfit-explanation').innerHTML = `Tenue assemblée avec vos vêtements <strong>propres</strong> pour une occasion <strong>${occasion}</strong>.`;
       document.getElementById('outfit-actions').classList.remove('hidden');
     }
 
@@ -416,30 +507,35 @@
       if (!currentGeneratedOutfit) return;
       Object.values(currentGeneratedOutfit).forEach(item => {
         const target = items.find(i => i.id === item.id);
-        if (target) target.timesWorn = (target.timesWorn || 0) + 1;
+        if (target) {
+          target.timesWorn = (target.timesWorn || 0) + 1;
+          target.clean = false; // Marqué automatiquement au linge
+        }
       });
-      localStorage.setItem('wardrobe_v2_items', JSON.stringify(items));
+      saveItemsToStorage();
       renderDressing();
+      alert("Comptage mis à jour ! Les pièces de ce look sont maintenant au linge.");
     }
 
     function saveCurrentOutfit() {
       if (!currentGeneratedOutfit) return;
-      savedOutfits.push({ id: Date.now(), items: currentGeneratedOutfit, rating: 5 });
+      savedOutfits.push({ id: Date.now(), items: currentGeneratedOutfit });
       localStorage.setItem('wardrobe_v2_saved', JSON.stringify(savedOutfits));
+      alert("Tenue sauvegardée dans vos favoris !");
     }
 
     function renderSavedOutfits() {
       const grid = document.getElementById('saved-outfits-grid');
       if (savedOutfits.length === 0) {
-        grid.innerHTML = '<div class="text-xs text-stone-400 col-span-full">Aucun look favori enregistré.</div>';
+        grid.innerHTML = '<div class="text-xs text-stone-400 text-center py-6">Aucun look favori enregistré.</div>';
         return;
       }
       grid.innerHTML = savedOutfits.map(o => `
-        <div class="bg-white p-3 border border-stone-200 rounded-2xl space-y-2">
-          <div class="grid grid-cols-2 gap-1">
+        <div class="bg-white p-3 border border-stone-200/80 rounded-2xl space-y-2">
+          <div class="grid grid-cols-2 gap-1.5">
             ${Object.values(o.items).map(i => `<img src="${i.image}" class="aspect-square object-cover rounded-lg">`).join('')}
           </div>
-          <div class="text-xs text-amber-500">★★★★★ (5/5)</div>
+          <div class="text-xs text-amber-500 font-medium">★ Ensemble Favori</div>
         </div>
       `).join('');
     }
@@ -448,9 +544,9 @@
       const days = parseInt(document.getElementById('trip-days').value) || 3;
       const selection = items.slice(0, Math.min(items.length, days + 2));
       document.getElementById('suitcase-result').innerHTML = selection.map(i => `
-        <div class="bg-white p-2 border border-stone-200 rounded-xl text-center">
+        <div class="bg-white p-2 border border-stone-200/80 rounded-xl text-center">
           <img src="${i.image}" class="aspect-square object-cover rounded-lg mb-1">
-          <span class="text-[10px] font-medium text-stone-800">${i.name}</span>
+          <span class="text-[10px] font-medium text-stone-800 block truncate">${i.name}</span>
         </div>
       `).join('');
     }
@@ -460,30 +556,10 @@
       document.getElementById('add-modal').classList.add('hidden');
       document.getElementById('add-form').reset();
       document.getElementById('image-preview-container').classList.add('hidden');
-      currentPhotoUrl = '';
+      currentCompressedPhoto = '';
     }
 
-    function handleFormSubmit(e) {
-      e.preventDefault();
-      const imageUrl = currentPhotoUrl || document.getElementById('item-image').value || 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400';
-      
-      items.push({
-        id: Date.now(),
-        name: document.getElementById('item-name').value,
-        category: document.getElementById('item-category').value,
-        color: document.getElementById('item-color').value,
-        season: document.getElementById('item-season').value,
-        occasion: document.getElementById('item-occasion').value,
-        timesWorn: 0,
-        image: imageUrl
-      });
-      
-      localStorage.setItem('wardrobe_v2_items', JSON.stringify(items));
-      renderDressing();
-      closeModal();
-    }
-
-    // Init
+    // Initialisation
     renderDressing();
   </script>
 </body>
