@@ -346,6 +346,14 @@
     let itemToDeleteId = null;
     let currentTemperature = null;
 
+    function saveItemsToStorage() {
+      localStorage.setItem('wardrobe_v3_items', JSON.stringify(items));
+    }
+
+    function saveOutfitsToStorage() {
+      localStorage.setItem('wardrobe_v3_saved', JSON.stringify(savedOutfits));
+    }
+
     function switchTab(tab) {
       ['dressing', 'stylist', 'saved', 'stats'].forEach(t => {
         document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tab);
@@ -578,58 +586,57 @@
       reader.readAsDataURL(file);
     }
 
-    function handleFormSubmit(e) {
-      e.preventDefault();
+    function handleFormSubmit(event) {
+      event.preventDefault();
       const editId = document.getElementById('edit-item-id').value;
-      const cat = document.getElementById('item-category').value;
-      const inputUrl = document.getElementById('item-image-url').value;
+      const name = document.getElementById('item-name').value;
+      const category = document.getElementById('item-category').value;
+      const subcategory = document.getElementById('item-subcategory').value;
+      const color = document.getElementById('item-color').value;
+      const season = document.getElementById('item-season').value;
+      const urlInput = document.getElementById('item-image-url').value;
+
+      let imageUrl = 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400';
+      if (currentCompressedPhoto) {
+        imageUrl = currentCompressedPhoto;
+      } else if (urlInput.trim() !== '') {
+        imageUrl = urlInput.trim();
+      } else if (editId) {
+        const existing = items.find(i => i.id === parseInt(editId));
+        if (existing) imageUrl = existing.image;
+      }
 
       if (editId) {
-        const item = items.find(i => i.id == editId);
-        if (item) {
-          item.name = document.getElementById('item-name').value;
-          item.category = cat;
-          item.subcategory = document.getElementById('item-subcategory').value || cat;
-          item.color = document.getElementById('item-color').value;
-          item.season = document.getElementById('item-season').value;
-          if (currentCompressedPhoto) {
-            item.image = currentCompressedPhoto;
-          } else if (inputUrl) {
-            item.image = inputUrl;
-          }
+        const index = items.findIndex(i => i.id === parseInt(editId));
+        if (index !== -1) {
+          items[index] = {
+            ...items[index],
+            name,
+            category,
+            subcategory,
+            color,
+            season,
+            image: imageUrl
+          };
         }
       } else {
-        const imageUrl = currentCompressedPhoto || inputUrl || 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400';
         const newItem = {
           id: Date.now(),
-          name: document.getElementById('item-name').value,
-          category: cat,
-          subcategory: document.getElementById('item-subcategory').value || cat,
-          color: document.getElementById('item-color').value,
-          season: document.getElementById('item-season').value,
+          name,
+          category,
+          subcategory,
+          color,
+          season,
           timesWorn: 0,
           clean: true,
           image: imageUrl
         };
-        items.push(newItem);
+        items.unshift(newItem);
       }
 
-      if (!saveItemsToStorage()) {
-        if (!editId) items.pop();
-      } else {
-        renderDressing();
-        closeModal();
-      }
-    }
-
-    function saveItemsToStorage() {
-      try {
-        localStorage.setItem('wardrobe_v3_items', JSON.stringify(items));
-        return true;
-      } catch (e) {
-        alert("Mémoire de stockage pleine.");
-        return false;
-      }
+      saveItemsToStorage();
+      closeModal();
+      renderDressing();
     }
 
     function promptDelete(id) {
@@ -647,196 +654,8 @@
         items = items.filter(i => i.id !== itemToDeleteId);
         saveItemsToStorage();
         renderDressing();
-        closeDeleteModal();
       }
-    }
-
-    function getLiveWeather() {
-      if (!navigator.geolocation) return;
-      document.getElementById('weather-location').innerText = "Géolocalisation...";
-      navigator.geolocation.getCurrentPosition(pos => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
-          .then(res => res.json())
-          .then(data => {
-            currentTemperature = Math.round(data.current_weather.temperature);
-            document.getElementById('weather-temp').innerText = `${currentTemperature}°C`;
-            document.getElementById('weather-location').innerText = "Météo Actuelle";
-            document.getElementById('weather-desc').innerText = currentTemperature < 15 ? "Temps frais (Météo prise en compte)" : "Temps doux (Météo prise en compte)";
-          });
-      });
-    }
-
-    // ALGORITHME DU STYLISTE IA AVANCÉ
-    function generateOutfit() {
-      const occasion = document.getElementById('outfit-occasion').value;
-      const cleanItems = items.filter(i => i.clean !== false);
-
-      if (cleanItems.length === 0) {
-        alert("Aucun vêtement propre disponible dans le vestiaire !");
-        return;
-      }
-
-      // 1. Filtrer par Température (Météo réelle)
-      let candidates = cleanItems.filter(item => {
-        if (currentTemperature !== null) {
-          if (currentTemperature < 15 && (item.subcategory === 'Short' || item.subcategory === 'Claquettes / Sandales')) return false;
-          if (currentTemperature > 22 && (item.subcategory === 'Pull' || item.subcategory === 'Veste / Manteau' || item.season === 'Froid')) return false;
-        }
-        return true;
-      });
-
-      // 2. Règles d'incompatibilité strictes par Occasion & Types
-      let allowedBottoms = candidates.filter(i => i.category === 'Bas');
-      let allowedTops = candidates.filter(i => i.category === 'Haut');
-      let allowedShoes = candidates.filter(i => i.category === 'Chaussures');
-      let allowedAcc = candidates.filter(i => i.category === 'Accessoire');
-
-      if (occasion === 'Travail' || occasion === 'Mariage / Cérémonie') {
-        allowedBottoms = allowedBottoms.filter(i => i.subcategory !== 'Survêtement' && i.subcategory !== 'Short');
-        allowedShoes = allowedShoes.filter(i => i.subcategory !== 'Claquettes / Sandales');
-        allowedTops = allowedTops.filter(i => i.subcategory !== 'Sweat');
-      } else if (occasion === 'Sport') {
-        allowedBottoms = allowedBottoms.filter(i => i.subcategory === 'Survêtement' || i.subcategory === 'Short');
-        allowedShoes = allowedShoes.filter(i => i.subcategory === 'Baskets');
-      }
-
-      // Sélection prioritaire du BAS
-      const chosenBottom = allowedBottoms[Math.floor(Math.random() * allowedBottoms.length)];
-      
-      // Incompatibilité Croisée Top / Bottom
-      if (chosenBottom && chosenBottom.subcategory === 'Survêtement') {
-        allowedTops = allowedTops.filter(i => i.subcategory !== 'Chemise');
-      } else if (chosenBottom && chosenBottom.subcategory === 'Jean') {
-        allowedTops = allowedTops.filter(i => i.subcategory !== 'Survêtement');
-      }
-
-      const chosenTop = allowedTops[Math.floor(Math.random() * allowedTops.length)];
-
-      // Contrôle Couleur (Max 1 couleur vive)
-      let usedColors = [];
-      if (chosenBottom) usedColors.push(chosenBottom.color || 'bleu');
-      if (chosenTop) usedColors.push(chosenTop.color || 'blanc');
-
-      if (usedColors.includes('vif')) {
-        allowedShoes = allowedShoes.filter(i => i.color !== 'vif');
-      }
-
-      const chosenShoes = allowedShoes[Math.floor(Math.random() * allowedShoes.length)];
-      const chosenAcc = allowedAcc[Math.floor(Math.random() * allowedAcc.length)];
-
-      currentGeneratedOutfit = {
-        Haut: chosenTop,
-        Bas: chosenBottom,
-        Chaussures: chosenShoes,
-        Accessoire: chosenAcc
-      };
-
-      // Rendu HTML des cartes de tenue
-      const display = document.getElementById('outfit-display');
-      display.innerHTML = '';
-      
-      let hasItem = false;
-      Object.keys(currentGeneratedOutfit).forEach(cat => {
-        const item = currentGeneratedOutfit[cat];
-        if (item) {
-          hasItem = true;
-          display.innerHTML += `
-            <div class="bg-white p-2 rounded-xl border border-stone-200/80 shadow-sm flex items-center gap-2">
-              <img src="${item.image}" class="w-12 h-12 object-cover rounded-lg bg-stone-100">
-              <div class="overflow-hidden">
-                <span class="text-[9px] text-stone-400 font-semibold block uppercase">${cat}</span>
-                <span class="text-xs font-medium text-stone-800 truncate block">${item.name}</span>
-              </div>
-            </div>
-          `;
-        }
-      });
-
-      const explanation = document.getElementById('outfit-explanation');
-      explanation.classList.remove('hidden');
-      explanation.innerText = `💡 Composition harmonieuse pour "${occasion}" avec filtrage de cohérence et respect des couleurs.`;
-
-      document.getElementById('outfit-actions').classList.remove('hidden');
-    }
-
-    function markOutfitAsWorn() {
-      if (!currentGeneratedOutfit) return;
-      Object.values(currentGeneratedOutfit).forEach(item => {
-        if (item) {
-          const realItem = items.find(i => i.id === item.id);
-          if (realItem) {
-            realItem.timesWorn = (realItem.timesWorn || 0) + 1;
-            realItem.clean = false;
-          }
-        }
-      });
-      saveItemsToStorage();
-      alert("Tenue marquée comme portée ! Les pièces sont envoyées au linge.");
-      renderDressing();
-    }
-
-    function saveCurrentOutfit() {
-      if (!currentGeneratedOutfit) return;
-      savedOutfits.push({
-        id: Date.now(),
-        date: new Date().toLocaleDateString('fr-FR'),
-        outfit: currentGeneratedOutfit
-      });
-      localStorage.setItem('wardrobe_v3_saved', JSON.stringify(savedOutfits));
-      alert("Tenue ajoutée à vos favoris !");
-    }
-
-    function renderSavedOutfits() {
-      const grid = document.getElementById('saved-outfits-grid');
-      if (savedOutfits.length === 0) {
-        grid.innerHTML = '<div class="text-center py-8 text-xs text-stone-400">Aucun look enregistré en favori.</div>';
-        return;
-      }
-
-      grid.innerHTML = savedOutfits.map((s, index) => `
-        <div class="bg-white p-3 rounded-2xl border border-stone-200/80 shadow-sm space-y-2">
-          <div class="flex justify-between items-center border-b border-stone-100 pb-1.5">
-            <span class="text-[10px] font-semibold text-stone-400">Look enregistré le ${s.date}</span>
-            <button onclick="deleteSavedOutfit(${index})" class="text-xs text-red-500">Supprimer</button>
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            ${Object.values(s.outfit).filter(Boolean).map(item => `
-              <div class="flex items-center gap-2 bg-stone-50 p-1.5 rounded-lg">
-                <img src="${item.image}" class="w-8 h-8 object-cover rounded-md">
-                <span class="text-[10px] font-medium text-stone-700 truncate">${item.name}</span>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function deleteSavedOutfit(index) {
-      savedOutfits.splice(index, 1);
-      localStorage.setItem('wardrobe_v3_saved', JSON.stringify(savedOutfits));
-      renderSavedOutfits();
-    }
-
-    function updateStats() {
-      if (!items || items.length === 0) return;
-
-      const sorted = [...items].sort((a, b) => (b.timesWorn || 0) - (a.timesWorn || 0));
-      const mostWorn = sorted[0];
-      const leastWorn = sorted[sorted.length - 1];
-
-      const activeCount = items.filter(i => (i.timesWorn || 0) > 0).length;
-      const rate = Math.round((activeCount / items.length) * 100);
-
-      const cleanCount = items.filter(i => i.clean !== false).length;
-      const dirtyCount = items.length - cleanCount;
-
-      document.getElementById('stats-most-worn-large').innerText = `${mostWorn.name} (${mostWorn.timesWorn || 0} fois)`;
-      document.getElementById('stats-least-worn-large').innerText = `${leastWorn.name} (${leastWorn.timesWorn || 0} fois)`;
-      document.getElementById('stats-usage-rate-large').innerText = `${rate}%`;
-      document.getElementById('stats-clean-count').innerText = cleanCount;
-      document.getElementById('stats-dirty-count').innerText = dirtyCount;
+      closeDeleteModal();
     }
 
     function promptResetStats() {
@@ -848,18 +667,147 @@
     }
 
     function confirmResetStats() {
-      items.forEach(i => {
-        i.timesWorn = 0;
-        i.clean = true;
-      });
+      items.forEach(i => i.timesWorn = 0);
       saveItemsToStorage();
       updateStats();
-      renderDressing();
       closeResetStatsModal();
+    }
+
+    function getLiveWeather() {
+      if ("geolocation" in navigator) {
+        document.getElementById('weather-desc').innerText = "Géolocalisation...";
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          try {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+            const data = await res.json();
+            if (data.current_weather) {
+              currentTemperature = Math.round(data.current_weather.temperature);
+              document.getElementById('weather-temp').innerText = `${currentTemperature}°C`;
+              document.getElementById('weather-location').innerText = "Météo Actuelle";
+              document.getElementById('weather-desc').innerText = `Vent: ${data.current_weather.windspeed} km/h`;
+            }
+          } catch (e) {
+            document.getElementById('weather-desc').innerText = "Erreur météo";
+          }
+        }, () => {
+          document.getElementById('weather-desc').innerText = "Accès GPS refusé";
+        });
+      }
+    }
+
+    function generateOutfit() {
+      const cleanItems = items.filter(i => i.clean !== false);
+      const tops = cleanItems.filter(i => i.category === 'Haut');
+      const bottoms = cleanItems.filter(i => i.category === 'Bas');
+      const shoes = cleanItems.filter(i => i.category === 'Chaussures');
+      const accessories = cleanItems.filter(i => i.category === 'Accessoire');
+
+      if (tops.length === 0 || bottoms.length === 0) {
+        alert("Il vous faut au moins un haut et un bas propres pour composer un look !");
+        return;
+      }
+
+      const top = tops[Math.floor(Math.random() * tops.length)];
+      const bottom = bottoms[Math.floor(Math.random() * bottoms.length)];
+      const shoe = shoes.length > 0 ? shoes[Math.floor(Math.random() * shoes.length)] : null;
+      const acc = accessories.length > 0 ? accessories[Math.floor(Math.random() * accessories.length)] : null;
+
+      currentGeneratedOutfit = [top, bottom, shoe, acc].filter(Boolean);
+
+      const display = document.getElementById('outfit-display');
+      display.innerHTML = currentGeneratedOutfit.map(item => `
+        <div class="bg-white rounded-xl border border-stone-200/80 p-2 text-center shadow-sm">
+          <img src="${item.image}" class="w-full aspect-square object-cover rounded-lg mb-1">
+          <div class="text-[10px] font-medium text-stone-800 truncate">${item.name}</div>
+          <div class="text-[9px] text-stone-400">${item.category}</div>
+        </div>
+      `).join('');
+
+      const exp = document.getElementById('outfit-explanation');
+      exp.innerText = `Look composé harmonieusement pour la journée. Assortiment basé sur vos pièces disponibles.`;
+      exp.classList.remove('hidden');
+      document.getElementById('outfit-actions').classList.remove('hidden');
+    }
+
+    function markOutfitAsWorn() {
+      if (!currentGeneratedOutfit) return;
+      currentGeneratedOutfit.forEach(item => {
+        const found = items.find(i => i.id === item.id);
+        if (found) {
+          found.timesWorn = (found.timesWorn || 0) + 1;
+          found.clean = false;
+        }
+      });
+      saveItemsToStorage();
+      alert("Look marqué comme porté ! Vêtements mis au linge.");
+      renderDressing();
+    }
+
+    function saveCurrentOutfit() {
+      if (!currentGeneratedOutfit) return;
+      const outfit = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('fr-FR'),
+        items: currentGeneratedOutfit
+      };
+      savedOutfits.unshift(outfit);
+      saveOutfitsToStorage();
+      alert("Look sauvegardé dans vos favoris !");
+    }
+
+    function renderSavedOutfits() {
+      const grid = document.getElementById('saved-outfits-grid');
+      if (savedOutfits.length === 0) {
+        grid.innerHTML = '<div class="text-center py-8 text-xs text-stone-400">Aucun look enregistré.</div>';
+        return;
+      }
+
+      grid.innerHTML = savedOutfits.map(outfit => `
+        <div class="bg-white rounded-2xl border border-stone-200/80 p-3 shadow-sm space-y-2">
+          <div class="flex justify-between items-center text-xs text-stone-400 border-b border-stone-100 pb-1.5">
+            <span>Enregistré le ${outfit.date}</span>
+            <button onclick="deleteSavedOutfit(${outfit.id})" class="text-red-500 hover:text-red-700 text-[10px]">Supprimer</button>
+          </div>
+          <div class="grid grid-cols-4 gap-1.5">
+            ${outfit.items.map(i => `
+              <img src="${i.image}" class="w-full aspect-square object-cover rounded-lg border border-stone-100">
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function deleteSavedOutfit(id) {
+      savedOutfits = savedOutfits.filter(o => o.id !== id);
+      saveOutfitsToStorage();
+      renderSavedOutfits();
+    }
+
+    function updateStats() {
+      const total = items.length;
+      if (total === 0) return;
+
+      const wornItems = items.filter(i => (i.timesWorn || 0) > 0);
+      const usageRate = Math.round((wornItems.length / total) * 100);
+
+      document.getElementById('stats-usage-rate-large').innerText = `${usageRate}%`;
+
+      const sortedByWorn = [...items].sort((a, b) => (b.timesWorn || 0) - (a.timesWorn || 0));
+      document.getElementById('stats-most-worn-large').innerText = `${sortedByWorn[0].name} (${sortedByWorn[0].timesWorn || 0}x)`;
+      document.getElementById('stats-least-worn-large').innerText = `${sortedByWorn[sortedByWorn.length - 1].name} (${sortedByWorn[sortedByWorn.length - 1].timesWorn || 0}x)`;
+
+      const cleanCount = items.filter(i => i.clean !== false).length;
+      const dirtyCount = total - cleanCount;
+
+      document.getElementById('stats-clean-count').innerText = cleanCount;
+      document.getElementById('stats-dirty-count').innerText = dirtyCount;
     }
 
     // Initialisation
     renderDressing();
+    updateSubcategoriesSelect();
   </script>
 </body>
 </html>
