@@ -30,10 +30,9 @@
 </head>
 <body class="h-full flex flex-col font-sans text-stone-800 antialiased bg-stone-100 select-none">
 
-  <!-- En-tête mobile compacte avec Logo Haut de Gamme -->
+  <!-- En-tête mobile -->
   <header class="bg-white/90 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-30 px-4 py-3 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-2.5">
-      <!-- Monogramme Logo Haute Couture SVG -->
       <div class="w-9 h-9 rounded-full bg-stone-900 flex items-center justify-center text-amber-100 shadow-md">
         <svg class="w-5 h-5 fill-current" viewBox="0 0 100 100">
           <path d="M 20 75 L 20 25 L 35 25 L 50 60 L 65 25 L 80 25 L 80 75 L 68 75 L 68 42 L 54 75 L 46 75 L 32 42 L 32 75 Z" />
@@ -51,12 +50,31 @@
     </button>
   </header>
 
-  <!-- Contenu Principal défilant -->
+  <!-- Contenu Principal -->
   <main class="flex-1 overflow-y-auto px-3 py-4 pb-24 no-scrollbar">
 
     <!-- 1. GARDEROBE TAB -->
     <section id="tab-dressing" class="space-y-4">
-      <!-- Filtres rapides -->
+      
+      <!-- Statistiques & Éco-Score -->
+      <div class="bg-white p-3.5 rounded-2xl border border-stone-200/80 shadow-sm space-y-2">
+        <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+          <span class="font-serif text-xs font-semibold text-stone-900">📊 Statistiques & Utilisation</span>
+          <span id="stats-usage-rate" class="text-[10px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">--% actifs</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <div class="bg-stone-50 p-2 rounded-xl">
+            <span class="text-[9px] text-stone-400 uppercase tracking-wider block">★ Le plus porté</span>
+            <span id="stats-most-worn" class="font-medium text-stone-800 truncate block mt-0.5">-</span>
+          </div>
+          <div class="bg-stone-50 p-2 rounded-xl">
+            <span class="text-[9px] text-stone-400 uppercase tracking-wider block">💤 Le moins porté</span>
+            <span id="stats-least-worn" class="font-medium text-stone-800 truncate block mt-0.5">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtres de catégories -->
       <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
         <button onclick="filterCategory('All')" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-stone-900 text-white whitespace-nowrap shadow-sm">Tout</button>
         <button onclick="filterCategory('Haut')" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Hauts</button>
@@ -65,12 +83,12 @@
         <button onclick="filterCategory('Accessoire')" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-stone-600 border border-stone-200 whitespace-nowrap">Accessoires</button>
       </div>
 
-      <!-- Grille d'articles -->
       <div id="dressing-grid" class="grid grid-cols-2 gap-3"></div>
     </section>
 
     <!-- 2. STYLISTE IA TAB -->
     <section id="tab-stylist" class="hidden space-y-4">
+      <!-- Météo -->
       <div class="bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl p-4 text-white shadow-md relative overflow-hidden">
         <div class="flex items-center justify-between">
           <div>
@@ -84,30 +102,44 @@
         </div>
       </div>
 
+      <!-- Filtres d'occasion et style -->
       <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-sm space-y-3">
-        <h2 class="font-serif text-base font-semibold text-stone-900">Générateur de Look</h2>
-        <div class="grid grid-cols-2 gap-2">
+        <div class="flex items-center justify-between">
+          <h2 class="font-serif text-base font-semibold text-stone-900">Générateur de Look</h2>
+          <span class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-medium">🎨 Harmonie IA active</span>
+        </div>
+        
+        <div class="space-y-2">
           <div>
             <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Occasion</label>
             <select id="outfit-occasion" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
-              <option value="Décontracté">Décontracté</option>
-              <option value="Travail">Travail</option>
+              <option value="Restaurant">Restaurant</option>
+              <option value="Repas de famille">Manger en famille</option>
+              <option value="Voir des amis">Voir des amis</option>
               <option value="Soirée">Soirée</option>
-              <option value="Sport">Sport</option>
+              <option value="Sport">Faire du sport</option>
+              <option value="Enterrement">Enterrement</option>
+              <option value="Travail">Travail / Pro</option>
+              <option value="Mariage / Cérémonie">Mariage / Cérémonie</option>
+              <option value="Cozy à la maison">Cozy à la maison</option>
+              <option value="Rendez-vous amoureux">Date / Rendez-vous amoureux</option>
+              <option value="Balade en ville">Balade en ville</option>
             </select>
           </div>
+
           <div>
-            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Saison</label>
-            <select id="outfit-season" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
-              <option value="Auto">Météo Auto</option>
-              <option value="Printemps">Printemps</option>
-              <option value="Été">Été</option>
-              <option value="Automne">Automne</option>
-              <option value="Hiver">Hiver</option>
+            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Style souhaité (optionnel)</label>
+            <select id="outfit-style" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
+              <option value="Libre">Indifférent / Automatique</option>
+              <option value="Décontracté">Décontracté</option>
+              <option value="Chic">Chic</option>
+              <option value="Sportswear">Sportswear</option>
+              <option value="Élégant">Élégant</option>
             </select>
           </div>
         </div>
-        <button onclick="generateOutfit()" class="w-full py-3 bg-stone-900 text-white rounded-xl text-xs font-medium active:bg-stone-800 shadow-sm">Composer une tenue (Propres uniquement)</button>
+
+        <button onclick="generateOutfit()" class="w-full py-3 bg-stone-900 text-white rounded-xl text-xs font-medium active:bg-stone-800 shadow-sm">Composer mon Look Harmonieux</button>
       </div>
 
       <div id="outfit-explanation" class="p-3 bg-amber-50 border border-amber-200/60 rounded-xl text-xs text-amber-900 hidden"></div>
@@ -140,7 +172,7 @@
 
   </main>
 
-  <!-- Navigation fixe en bas (Bottom Navigation Bar Mobile) -->
+  <!-- Navigation fixe -->
   <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-stone-200/80 z-30 px-3 py-2 pb-safe shadow-lg">
     <div class="flex justify-around items-center">
       <button onclick="switchTab('dressing')" id="nav-dressing" class="nav-item flex flex-col items-center gap-1 text-stone-900">
@@ -165,7 +197,7 @@
     </div>
   </nav>
 
-  <!-- Modal d'ajout de pièce avec Appareil Photo & Compression Automatique -->
+  <!-- Modal d'ajout de pièce -->
   <div id="add-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center hidden">
     <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-stone-100 pb-2">
@@ -176,7 +208,6 @@
       </div>
 
       <form id="add-form" onsubmit="handleFormSubmit(event)" class="space-y-3">
-        <!-- Bouton Photo déclenchant directement l'appareil photo du S25 -->
         <div>
           <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Photo du vêtement</label>
           <label class="w-full py-3 px-4 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-medium text-center border border-dashed border-stone-300 transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -184,62 +215,27 @@
             Prendre une photo avec l'appareil
             <input type="file" id="item-file" accept="image/*" capture="environment" onchange="processImage(event)" class="hidden">
           </label>
-          <input type="url" id="item-image-url" placeholder="Ou coller une URL d'image" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs mt-2">
+          <input type="url" id="item-image-url" placeholder="Ou coller un lien direct d'image (.jpg, .png)" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs mt-2">
           
-          <!-- Prévisualisation image -->
           <div id="image-preview-container" class="mt-2 hidden flex items-center gap-2">
             <img id="image-preview" class="w-16 h-16 object-cover rounded-xl border border-stone-200">
-            <span class="text-[10px] text-emerald-600 font-medium">✓ Photo optimisée pour la mémoire</span>
+            <span class="text-[10px] text-emerald-600 font-medium">✓ Photo prête</span>
           </div>
         </div>
 
         <div>
           <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Désignation</label>
-          <input type="text" id="item-name" required placeholder="ex: Blazer Laine, Chemise Soie..." class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
+          <input type="text" id="item-name" required placeholder="ex: Blazer Laine Noir, Jean Brut..." class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Catégorie</label>
-            <select id="item-category" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
-              <option value="Haut">Haut</option>
-              <option value="Bas">Bas</option>
-              <option value="Chaussures">Chaussures</option>
-              <option value="Accessoire">Accessoire</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Couleur</label>
-            <select id="item-color" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
-              <option value="Blanc">Blanc</option>
-              <option value="Noir">Noir</option>
-              <option value="Bleu">Bleu</option>
-              <option value="Beige">Beige</option>
-              <option value="Gris">Gris</option>
-              <option value="Marron">Marron</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Saison</label>
-            <select id="item-season" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
-              <option value="Printemps">Printemps</option>
-              <option value="Été">Été</option>
-              <option value="Automne">Automne</option>
-              <option value="Hiver">Hiver</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Occasion</label>
-            <select id="item-occasion" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
-              <option value="Décontracté">Décontracté</option>
-              <option value="Travail">Travail</option>
-              <option value="Soirée">Soirée</option>
-              <option value="Sport">Sport</option>
-            </select>
-          </div>
+        <div>
+          <label class="block text-[10px] text-stone-400 uppercase tracking-wider mb-1">Catégorie</label>
+          <select id="item-category" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-xs">
+            <option value="Haut">Haut</option>
+            <option value="Bas">Bas</option>
+            <option value="Chaussures">Chaussures</option>
+            <option value="Accessoire">Accessoire</option>
+          </select>
         </div>
 
         <button type="submit" class="w-full py-3 bg-stone-900 text-white rounded-xl text-xs font-medium active:bg-stone-800 shadow-sm mt-2">Enregistrer dans la garde-robe</button>
@@ -264,10 +260,10 @@
 
   <script>
     const defaultItems = [
-      { id: 1, name: 'Chemise en Soie', category: 'Haut', color: 'Blanc', season: 'Printemps', occasion: 'Travail', timesWorn: 3, clean: true, image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400' },
-      { id: 2, name: 'Jean Brut Droit', category: 'Bas', color: 'Bleu', season: 'Printemps', occasion: 'Décontracté', timesWorn: 8, clean: true, image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400' },
-      { id: 3, name: 'Mocassins Cuir', category: 'Chaussures', color: 'Noir', season: 'Printemps', occasion: 'Travail', timesWorn: 2, clean: true, image: 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400' },
-      { id: 4, name: 'Sac Classique', category: 'Accessoire', color: 'Beige', season: 'Printemps', occasion: 'Soirée', timesWorn: 1, clean: true, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400' }
+      { id: 1, name: 'Chemise en Soie Blanche', category: 'Haut', timesWorn: 3, clean: true, image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400' },
+      { id: 2, name: 'Jean Brut Droit Bleu', category: 'Bas', timesWorn: 8, clean: true, image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400' },
+      { id: 3, name: 'Mocassins Cuir Noir', category: 'Chaussures', timesWorn: 2, clean: true, image: 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400' },
+      { id: 4, name: 'Sac Classique Marron', category: 'Accessoire', timesWorn: 1, clean: true, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400' }
     ];
 
     let items = JSON.parse(localStorage.getItem('wardrobe_v2_items')) || defaultItems;
@@ -288,6 +284,27 @@
         }
       });
       if (tab === 'saved') renderSavedOutfits();
+      if (tab === 'dressing') updateStats();
+    }
+
+    function updateStats() {
+      if (!items || items.length === 0) {
+        document.getElementById('stats-most-worn').innerText = "Aucun vêtement";
+        document.getElementById('stats-least-worn').innerText = "Aucun vêtement";
+        document.getElementById('stats-usage-rate').innerText = "0% actifs";
+        return;
+      }
+
+      const sorted = [...items].sort((a, b) => (b.timesWorn || 0) - (a.timesWorn || 0));
+      const mostWorn = sorted[0];
+      const leastWorn = sorted[sorted.length - 1];
+
+      const activeCount = items.filter(i => (i.timesWorn || 0) > 0).length;
+      const rate = Math.round((activeCount / items.length) * 100);
+
+      document.getElementById('stats-most-worn').innerText = `${mostWorn.name} (${mostWorn.timesWorn || 0}x)`;
+      document.getElementById('stats-least-worn').innerText = `${leastWorn.name} (${leastWorn.timesWorn || 0}x)`;
+      document.getElementById('stats-usage-rate').innerText = `${rate}% actifs`;
     }
 
     function filterCategory(cat) {
@@ -302,6 +319,7 @@
     }
 
     function renderDressing() {
+      updateStats();
       const grid = document.getElementById('dressing-grid');
       const filtered = currentCategoryFilter === 'All' 
         ? items 
@@ -318,12 +336,10 @@
             <div class="aspect-square bg-stone-100 relative overflow-hidden">
               <img src="${item.image}" class="w-full h-full object-cover">
               
-              <!-- Badge statut propreté -->
               <button onclick="toggleCleanStatus(${item.id})" class="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[9px] font-semibold backdrop-blur-md shadow-sm transition-all ${item.clean ? 'bg-emerald-500/90 text-white' : 'bg-amber-500/90 text-white'}">
                 ${item.clean ? '✓ Propre' : '🧺 Au linge'}
               </button>
 
-              <!-- Bouton Suppression -->
               <button onclick="promptDelete(${item.id})" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 text-white backdrop-blur-md flex items-center justify-center active:scale-90">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
               </button>
@@ -331,13 +347,12 @@
             
             <div class="p-2.5">
               <div class="font-medium text-xs text-stone-900 truncate">${item.name}</div>
-              <div class="text-[10px] text-stone-400 mt-0.5">${item.category} • ${item.occasion}</div>
+              <div class="text-[10px] text-stone-400 mt-0.5">${item.category}</div>
             </div>
           </div>
 
           <div class="px-2.5 pb-2.5 flex justify-between items-center text-[10px] text-stone-500 border-t border-stone-100 pt-1.5">
             <span>Porté: <strong>${item.timesWorn || 0}x</strong></span>
-            <span class="text-stone-400">${item.season}</span>
           </div>
         </div>
       `).join('');
@@ -352,7 +367,6 @@
       }
     }
 
-    /* REDIMENSIONNEMENT & COMPRESSION DES PHOTOS DU S25 */
     function processImage(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -361,7 +375,6 @@
       reader.onload = function(e) {
         const img = new Image();
         img.onload = function() {
-          // Création d'un Canvas pour redimensionner la photo
           const canvas = document.createElement('canvas');
           const MAX_WIDTH = 600;
           const MAX_HEIGHT = 600;
@@ -385,9 +398,7 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Compression en JPEG qualité 75% (passe de ~10Mo à ~60Ko)
           currentCompressedPhoto = canvas.toDataURL('image/jpeg', 0.75);
-
           document.getElementById('image-preview').src = currentCompressedPhoto;
           document.getElementById('image-preview-container').classList.remove('hidden');
         };
@@ -404,9 +415,6 @@
         id: Date.now(),
         name: document.getElementById('item-name').value,
         category: document.getElementById('item-category').value,
-        color: document.getElementById('item-color').value,
-        season: document.getElementById('item-season').value,
-        occasion: document.getElementById('item-occasion').value,
         timesWorn: 0,
         clean: true,
         image: imageUrl
@@ -414,7 +422,7 @@
 
       items.push(newItem);
       if (!saveItemsToStorage()) {
-        items.pop(); // Annulation si dépassement quota mémoire
+        items.pop();
       } else {
         renderDressing();
         closeModal();
@@ -426,7 +434,7 @@
         localStorage.setItem('wardrobe_v2_items', JSON.stringify(items));
         return true;
       } catch (e) {
-        alert("La mémoire du téléphone est pleine. Essayez de supprimer quelques pièces ou photos.");
+        alert("La mémoire du téléphone est pleine. Supprimez quelques pièces.");
         return false;
       }
     }
@@ -451,10 +459,7 @@
     }
 
     function getLiveWeather() {
-      if (!navigator.geolocation) {
-        alert("Géolocalisation indisponible");
-        return;
-      }
+      if (!navigator.geolocation) return;
       document.getElementById('weather-location').innerText = "Géolocalisation...";
       navigator.geolocation.getCurrentPosition(pos => {
         const lat = pos.coords.latitude;
@@ -465,25 +470,53 @@
             const temp = Math.round(data.current_weather.temperature);
             document.getElementById('weather-temp').innerText = `${temp}°C`;
             document.getElementById('weather-location').innerText = "Météo Actuelle";
-            document.getElementById('weather-desc').innerText = temp < 15 ? "Temps frais (Tenue d'Hiver)" : "Temps doux (Tenue légère)";
-            document.getElementById('outfit-season').value = temp < 15 ? "Hiver" : "Printemps";
+            document.getElementById('weather-desc').innerText = temp < 15 ? "Temps frais" : "Temps doux";
           });
       });
     }
 
+    // --- ALGORITHME HARMONIE DES COULEURS (IA) ---
+    function detectColor(name) {
+      const n = name.toLowerCase();
+      if (n.includes('noir') || n.includes('black') || n.includes('sombre')) return 'noir';
+      if (n.includes('blanc') || n.includes('white') || n.includes('crème') || n.includes('beige') || n.includes('ecru')) return 'neutre_clair';
+      if (n.includes('gris') || n.includes('grey') || n.includes('marine') || n.includes('navy') || n.includes('brut') || n.includes('marron') || n.includes('jean')) return 'neutre_fonce';
+      if (n.includes('rouge') || n.includes('vert') || n.includes('bleu') || n.includes('jaune') || n.includes('rose') || n.includes('orange') || n.includes('violet')) return 'vif';
+      return 'neutre_fonce';
+    }
+
     function generateOutfit() {
       const occasion = document.getElementById('outfit-occasion').value;
-      const season = document.getElementById('outfit-season').value;
+      const style = document.getElementById('outfit-style').value;
       const categories = ['Haut', 'Bas', 'Chaussures', 'Accessoire'];
-      
-      // Sélectionne uniquement les vêtements PROPRES
       const cleanItems = items.filter(i => i.clean !== false);
 
+      if (cleanItems.length === 0) {
+        alert("Aucun vêtement propre disponible dans votre garde-robe !");
+        return;
+      }
+
+      // Sélection intelligente avec filtre de couleur
       currentGeneratedOutfit = {};
+      let selectedColors = [];
+
       categories.forEach(cat => {
-        let match = cleanItems.filter(i => i.category === cat && (season === 'Auto' || i.season === season) && i.occasion === occasion);
-        if (match.length === 0) match = cleanItems.filter(i => i.category === cat);
-        if (match.length > 0) currentGeneratedOutfit[cat] = match[Math.floor(Math.random() * match.length)];
+        const candidates = cleanItems.filter(i => i.category === cat);
+        if (candidates.length > 0) {
+          // Préférer les pièces qui s'accordent en couleur
+          let bestCandidates = candidates.filter(item => {
+            const colorGroup = detectColor(item.name);
+            // Si on a déjà une couleur vive, privilégier le neutre
+            if (selectedColors.includes('vif') && colorGroup === 'vif') return false;
+            return true;
+          });
+
+          if (bestCandidates.length === 0) bestCandidates = candidates; // Fallback
+
+          const chosen = bestCandidates[Math.floor(Math.random() * bestCandidates.length)];
+          currentGeneratedOutfit[cat] = chosen;
+          selectedColors.push(detectColor(chosen.name));
+        }
       });
 
       const display = document.getElementById('outfit-display');
@@ -493,13 +526,14 @@
           <div class="bg-white p-2 border border-stone-200/80 rounded-xl">
             <img src="${item.image}" class="aspect-square object-cover rounded-lg mb-1 w-full">
             <div class="text-[11px] font-medium text-stone-900 truncate">${item.name}</div>
-            <div class="text-[9px] text-stone-400">${cat} • ${item.color}</div>
+            <div class="text-[9px] text-stone-400">${cat}</div>
           </div>
         ` : '';
       }).join('');
 
+      const styleText = style !== 'Libre' ? ` • Style : <strong>${style}</strong>` : '';
       document.getElementById('outfit-explanation').classList.remove('hidden');
-      document.getElementById('outfit-explanation').innerHTML = `Tenue assemblée avec vos vêtements <strong>propres</strong> pour une occasion <strong>${occasion}</strong>.`;
+      document.getElementById('outfit-explanation').innerHTML = `Tenue harmonisée (couleurs équilibrées) pour : <strong>${occasion}</strong>${styleText}.`;
       document.getElementById('outfit-actions').classList.remove('hidden');
     }
 
@@ -509,17 +543,18 @@
         const target = items.find(i => i.id === item.id);
         if (target) {
           target.timesWorn = (target.timesWorn || 0) + 1;
-          target.clean = false; // Marqué automatiquement au linge
+          target.clean = false;
         }
       });
       saveItemsToStorage();
       renderDressing();
-      alert("Comptage mis à jour ! Les pièces de ce look sont maintenant au linge.");
+      alert("Comptage mis à jour ! Les pièces sont au linge.");
     }
 
     function saveCurrentOutfit() {
       if (!currentGeneratedOutfit) return;
-      savedOutfits.push({ id: Date.now(), items: currentGeneratedOutfit });
+      const occasion = document.getElementById('outfit-occasion').value;
+      savedOutfits.push({ id: Date.now(), items: currentGeneratedOutfit, occasion: occasion });
       localStorage.setItem('wardrobe_v2_saved', JSON.stringify(savedOutfits));
       alert("Tenue sauvegardée dans vos favoris !");
     }
@@ -535,7 +570,7 @@
           <div class="grid grid-cols-2 gap-1.5">
             ${Object.values(o.items).map(i => `<img src="${i.image}" class="aspect-square object-cover rounded-lg">`).join('')}
           </div>
-          <div class="text-xs text-amber-500 font-medium">★ Ensemble Favori</div>
+          <div class="text-xs text-amber-600 font-medium">★ Look pour : ${o.occasion || 'Général'}</div>
         </div>
       `).join('');
     }
@@ -559,7 +594,6 @@
       currentCompressedPhoto = '';
     }
 
-    // Initialisation
     renderDressing();
   </script>
 </body>
